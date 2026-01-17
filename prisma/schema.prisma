@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+  engineType      = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Content {
+  id          String   @id @default(cuid())
+  title       String
+  source_lang String
+  target_lang String
+  data        Json     // The Interlinear Gloss data (Array of Objects)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([source_lang, target_lang])
+}

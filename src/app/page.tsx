@@ -1,65 +1,55 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { BookOpen, PlusCircle, Languages } from 'lucide-react';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-background flex flex-col justify-center px-4 py-20 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-source via-primary to-target" />
+      <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-target/5 rounded-full blur-3xl" />
+
+      <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-2xl text-center">
+        <div className="inline-flex items-center justify-center p-4 bg-primary/10 text-primary rounded-3xl mb-8 border border-primary/20">
+          <Languages size={56} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <h1 className="text-5xl font-black tracking-tighter text-foreground sm:text-7xl mb-4">
+          BILA
+        </h1>
+        <p className="max-w-md mx-auto text-xl text-muted-foreground font-medium leading-relaxed">
+          Master new languages with our <span className="text-source font-bold italic">Interlinear</span> reading experience.
+        </p>
+      </div>
+
+      <div className="relative z-10 mt-16 sm:mx-auto sm:w-full sm:max-w-xl">
+        <div className="grid gap-6">
+          <Link
+            href="/library"
+            className="premium-card flex items-center gap-6 p-8 group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="p-4 bg-source/10 text-source rounded-2xl group-hover:bg-source group-hover:text-white transition-all duration-300">
+              <BookOpen size={32} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black group-hover:text-source transition-colors">Library</h2>
+              <p className="text-muted-foreground font-medium mt-1">Read your collection of bilingual stories.</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/demo"
+            className="premium-card flex items-center gap-6 p-8 group"
           >
-            Documentation
-          </a>
+            <div className="p-4 bg-target/10 text-target rounded-2xl group-hover:bg-target group-hover:text-white transition-all duration-300">
+              <PlusCircle size={32} />
+            </div>
+            <div>
+              <h2 className="text-2xl font-black group-hover:text-target transition-colors">Editor</h2>
+              <p className="text-muted-foreground font-medium mt-1">Create and validate new interlinear lessons.</p>
+            </div>
+          </Link>
         </div>
-      </main>
+      </div>
     </div>
-  );
+  )
 }
