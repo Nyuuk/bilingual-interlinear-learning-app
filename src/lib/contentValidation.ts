@@ -96,3 +96,12 @@ export const parseImportedContent = (json: string): InterlinearContent => {
             : [],
     };
 };
+
+export const normalizeInterlinearPairs = (value: unknown): InterlinearPair[] => (
+    Array.isArray(value)
+        ? value.map((pair) => ({
+            source: typeof pair?.source === 'string' ? pair.source : '',
+            target: typeof pair?.target === 'string' ? pair.target : '',
+        }))
+        : []
+);

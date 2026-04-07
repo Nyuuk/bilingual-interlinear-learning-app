@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from 'react';
 import { Editor } from '@/components/Editor';
 
 export default function EditorPage() {
@@ -15,7 +16,9 @@ export default function EditorPage() {
                     </p>
                 </div>
 
-                <Editor />
+                <Suspense fallback={<div className="text-center text-muted-foreground">Loading editor...</div>}>
+                    <Editor />
+                </Suspense>
             </div>
         </main>
     );

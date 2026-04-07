@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { getPrisma } from '@/lib/prisma';
 import { ContentStatus, InterlinearContent } from '@/types';
 import { validateContent } from '@/lib/contentValidation';
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
                 source_lang: body.metadata.source_lang,
                 target_lang: body.metadata.target_lang,
                 status: parseStatus(body.metadata.status),
-                data: body.data,
+                data: body.data as unknown as Prisma.InputJsonValue,
             },
         });
 

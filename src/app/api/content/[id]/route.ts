@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { getPrisma } from '@/lib/prisma';
 import { ContentStatus, InterlinearContent } from '@/types';
-import { validateContent } from '@/lib/contentValidation';
+import { normalizeInterlinearPairs, validateContent } from '@/lib/contentValidation';
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +46,7 @@ export async function PATCH(
         if (typeof body.source_lang === 'string') updateData.source_lang = body.source_lang;
         if (typeof body.target_lang === 'string') updateData.target_lang = body.target_lang;
         if (body.status) updateData.status = parseStatus(body.status);
-        if (body.data) updateData.data = body.data;
+        if (body.data) updateData.data = body.data as unknown as Prisma.InputJsonValue;
 
         if (
             typeof body.title === 'string' ||
@@ -64,7 +65,7 @@ export async function PATCH(
                 source_lang: typeof body.source_lang === 'string' ? body.source_lang : existing.source_lang,
                 target_lang: typeof body.target_lang === 'string' ? body.target_lang : existing.target_lang,
                 status: parseStatus(body.status ?? (existing as { status?: unknown }).status),
-            }, Array.isArray(body.data) ? body.data : (existing.data as InterlinearContent['data']));
+            }, Array.isArray(body.data) ? body.data : normalizeInterlinearPairs(existing.data));
 
             if (!validation.isValid) {
                 return NextResponse.json({
