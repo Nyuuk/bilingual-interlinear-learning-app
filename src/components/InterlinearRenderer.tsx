@@ -8,6 +8,7 @@ interface InterlinearRendererProps {
     sourceClassName?: string;
     targetClassName?: string;
     fontSizeScale?: number;
+    showTranslation?: boolean;
 }
 
 /**
@@ -21,6 +22,7 @@ export const InterlinearRenderer: React.FC<InterlinearRendererProps> = ({
     sourceClassName,
     targetClassName,
     fontSizeScale = 1,
+    showTranslation = true,
 }) => {
     return (
         <div className={cn("flex flex-wrap gap-x-4 gap-y-8 leading-relaxed", className)}>
@@ -45,7 +47,7 @@ export const InterlinearRenderer: React.FC<InterlinearRendererProps> = ({
                         )}
                         style={{ fontSize: `${0.875 * fontSizeScale}rem` }}
                     >
-                        {pair.target || "\u00A0"}
+                        {showTranslation ? (pair.target || "\u00A0") : "\u00A0"}
                     </span>
                 </div>
             ))}

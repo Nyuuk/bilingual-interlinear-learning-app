@@ -1,24 +1,36 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { InterlinearRenderer } from '@/components/InterlinearRenderer';
 import { SettingsMenu } from '@/components/SettingsMenu';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { InterlinearPair } from '@/types';
+
+interface ReaderContent {
+    id: string;
+    title: string;
+    source_lang: string;
+    target_lang: string;
+    data: InterlinearPair[];
+}
 
 export default function ReaderPage() {
     const params = useParams();
     const router = useRouter();
-    const [content, setContent] = useState<any>(null);
+    const [content, setContent] = useState<ReaderContent | null>(null);
     const [loading, setLoading] = useState(true);
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(
+        () => () => undefined,
+        () => true,
+        () => false,
+    );
 
-    const { fontSize, themeId } = useSettingsStore();
+    const { fontSize, themeId, showTranslation } = useSettingsStore();
 
     useEffect(() => {
-        setMounted(true);
         if (params.id) {
             fetch(`/api/content/${params.id}`)
                 .then(res => res.json())
@@ -67,6 +79,11 @@ export default function ReaderPage() {
                                 <span className="px-2 py-0.5 bg-target/10 text-target text-xs font-bold rounded uppercase">
                                     {content.target_lang}
                                 </span>
+                                {!showTranslation && (
+                                    <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                                        Translation Hidden
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -83,6 +100,7 @@ export default function ReaderPage() {
                     <InterlinearRenderer
                         pairs={content.data}
                         fontSizeScale={fontSizeScale}
+                        showTranslation={showTranslation}
                     />
                 </div>
             </main>

@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react'
 import { useSettingsStore, ThemeId } from '@/store/useSettingsStore'
-import { Type, Palette, Check, Minus, Plus, X } from 'lucide-react'
+import { Type, Palette, Check, Minus, Plus, X, Languages } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export const SettingsMenu: React.FC = () => {
-    const { fontSize, setFontSize, themeId, setTheme } = useSettingsStore()
+    const { fontSize, setFontSize, themeId, setTheme, showTranslation, setShowTranslation } = useSettingsStore()
     const [isOpen, setIsOpen] = useState(false)
 
     const themes: { id: ThemeId; name: string; bg: string; text: string }[] = [
@@ -73,6 +73,27 @@ export const SettingsMenu: React.FC = () => {
                                     <Plus size={18} />
                                 </button>
                             </div>
+                        </div>
+
+                        <div className="mb-8">
+                            <div className="flex items-center gap-2 mb-4 text-foreground/80 font-bold text-sm">
+                                <Languages size={16} />
+                                <span>Translation</span>
+                            </div>
+                            <button
+                                onClick={() => setShowTranslation(!showTranslation)}
+                                className={cn(
+                                    "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-bold transition-colors",
+                                    showTranslation
+                                        ? "border-primary/20 bg-primary/10 text-primary"
+                                        : "border-border bg-muted/40 text-muted-foreground"
+                                )}
+                            >
+                                <span>{showTranslation ? 'Visible' : 'Hidden'}</span>
+                                <span className="text-xs uppercase tracking-widest">
+                                    {showTranslation ? 'Tap to hide' : 'Tap to show'}
+                                </span>
+                            </button>
                         </div>
 
                         {/* Themes Section */}

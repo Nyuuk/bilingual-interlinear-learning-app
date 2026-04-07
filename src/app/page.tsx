@@ -37,7 +37,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/demo"
+            href="/editor"
             className="premium-card flex items-center gap-6 p-8 group"
           >
             <div className="p-4 bg-target/10 text-target rounded-2xl group-hover:bg-target group-hover:text-white transition-all duration-300">
@@ -45,7 +45,7 @@ export default function HomePage() {
             </div>
             <div>
               <h2 className="text-2xl font-black group-hover:text-target transition-colors">Editor</h2>
-              <p className="text-muted-foreground font-medium mt-1">Create and validate new interlinear lessons.</p>
+              <p className="text-muted-foreground font-medium mt-1">Create, review, and update interlinear lessons.</p>
             </div>
           </Link>
         </div>

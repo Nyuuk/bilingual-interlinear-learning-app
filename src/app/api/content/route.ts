@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
-import { InterlinearContent } from '@/types';
+import { ContentStatus, InterlinearContent } from '@/types';
+import { validateContent } from '@/lib/contentValidation';
 
 export const dynamic = "force-dynamic";
+
+const parseStatus = (value: unknown): ContentStatus => (
+    value === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT'
+);
 
 export async function POST(req: NextRequest) {
     try {
@@ -12,13 +17,22 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid data format" }, { status: 400 });
         }
 
+        const validation = validateContent(body.metadata, body.data);
+        if (!validation.isValid) {
+            return NextResponse.json({
+                error: validation.formError ?? "Invalid content",
+                validation,
+            }, { status: 400 });
+        }
+
         const content = await getPrisma().content.create({
             data: {
                 title: body.metadata.title,
                 source_lang: body.metadata.source_lang,
                 target_lang: body.metadata.target_lang,
-                data: body.data as any, // Prisma Json field
-            }
+                status: parseStatus(body.metadata.status),
+                data: body.data,
+            },
         });
 
         return NextResponse.json(content, { status: 201 });
@@ -34,7 +48,7 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         });
         return NextResponse.json(contents);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

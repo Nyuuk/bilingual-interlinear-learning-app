@@ -11,14 +11,21 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model Content {
   id          String   @id @default(cuid())
   title       String
   source_lang String
   target_lang String
+  status      ContentStatus @default(DRAFT)
   data        Json     // The Interlinear Gloss data (Array of Objects)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@index([status])
   @@index([source_lang, target_lang])
 }

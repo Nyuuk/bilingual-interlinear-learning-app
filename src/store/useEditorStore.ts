@@ -1,26 +1,57 @@
 import { create } from 'zustand';
 import { InterlinearPair, InterlinearContent } from '@/types';
+import { parseImportedContent } from '@/lib/contentValidation';
+
+interface ImportJsonResult {
+    ok: boolean;
+    error?: string;
+}
 
 interface EditorState {
+    currentContentId: string | null;
     pairs: InterlinearPair[];
     metadata: InterlinearContent['metadata'];
+    resetEditor: () => void;
+    loadContent: (contentId: string | null, content: InterlinearContent) => void;
     setPairs: (pairs: InterlinearPair[]) => void;
+    setMetadata: (metadata: InterlinearContent['metadata']) => void;
     updatePair: (index: number, source: string, target: string) => void;
     addPair: (index: number) => void;
     removePair: (index: number) => void;
     splitPair: (index: number, sourceSplitAt: number, targetSplitAt: number) => void;
     mergeWithNext: (index: number) => void;
-    importJson: (json: string) => void;
+    importJson: (json: string) => ImportJsonResult;
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
+    currentContentId: null,
     pairs: [],
     metadata: {
         title: '',
         source_lang: '',
         target_lang: '',
+        status: 'DRAFT',
     },
+    resetEditor: () => set({
+        currentContentId: null,
+        pairs: [],
+        metadata: {
+            title: '',
+            source_lang: '',
+            target_lang: '',
+            status: 'DRAFT',
+        },
+    }),
+    loadContent: (contentId, content) => set({
+        currentContentId: contentId,
+        pairs: content.data,
+        metadata: {
+            ...content.metadata,
+            status: content.metadata.status ?? 'DRAFT',
+        },
+    }),
     setPairs: (pairs) => set({ pairs }),
+    setMetadata: (metadata) => set({ metadata }),
     updatePair: (index, source, target) => set((state) => {
         const newPairs = [...state.pairs];
         newPairs[index] = { source, target };
@@ -67,13 +98,22 @@ export const useEditorStore = create<EditorState>((set) => ({
     }),
     importJson: (json) => {
         try {
-            const parsed = JSON.parse(json) as InterlinearContent;
+            const parsed = parseImportedContent(json);
             set({
+                currentContentId: null,
                 pairs: parsed.data || [],
-                metadata: parsed.metadata || { title: '', source_lang: '', target_lang: '' }
+                metadata: {
+                    ...(parsed.metadata || { title: '', source_lang: '', target_lang: '' }),
+                    status: parsed.metadata?.status ?? 'DRAFT',
+                },
             });
+            return { ok: true };
         } catch (e) {
             console.error("Failed to parse JSON", e);
+            return {
+                ok: false,
+                error: e instanceof Error ? e.message : 'Failed to import JSON.',
+            };
         }
     },
 }));
